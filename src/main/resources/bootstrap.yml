@@ -1,0 +1,61 @@
+### 如果开启配置中心，所有的配置以配置中心的为主
+
+server:
+  port: 40000
+  servlet:
+    context-path: /
+
+### 环境
+spring:
+  application:
+    name: sxmd-gateway
+  # 环境的选择   dev | prod
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      # 服务的注册
+      discovery:
+        enabled: true
+      server-addr: localhost:8848
+      # 配置中心配置  包含数据库配置和服务启动端口
+      config:
+        enabled: false
+        file-extension: yaml
+        prefix: ${spring.application.name}
+    gateway:
+      enabled: true
+      discovery:
+        # 开启通过服务中心自动根据serviceId创建路由的功能,正式环境关闭，进行手动创建
+        locator:
+          enabled: false
+          # 项目名称可以小写
+          lower-case-service-id: true
+      ### 网关本身的转发,为了保证网关冲突，网关本身的不需要存库
+      routes:
+      - id: ${spring.application.name}
+        uri: http://localhost:${server.port}/
+        predicates:
+        - Path=/${spring.application.name}/**
+        filters:
+        - StripPrefix=1
+
+
+
+### 引入了公共的web组件，去除不兼容的配置
+sxmd:
+  web:
+    mybatis-plus-page-config:
+      enabled: false
+    cors-config:
+      enabled: false
+    swagger-web-mvc:
+      enabled: false
+
+
+### mybatis  因为引用了plus 所以这里要用 plus 配置
+mybatis-plus:
+  mapper-locations: com/sxmd/content/*/mapper/*.xml
+  type-aliases-package: com.sxmd
+  configuration:
+    map-underscore-to-camel-case: true
