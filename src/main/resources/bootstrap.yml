@@ -28,7 +28,7 @@ spring:
       discovery:
         # 开启通过服务中心自动根据serviceId创建路由的功能,正式环境关闭，进行手动创建
         locator:
-          enabled: false
+          enabled: true
           # 项目名称可以小写
           lower-case-service-id: true
       ### 网关本身的转发,为了保证网关冲突，网关本身的不需要存库
@@ -36,7 +36,7 @@ spring:
       - id: ${spring.application.name}
         uri: http://localhost:${server.port}/
         predicates:
-        - Path=/${spring.application.name}/**
+        - Path=/${spring.application.name}/**,/oauth/token
         filters:
         - StripPrefix=1
 

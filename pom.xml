@@ -41,6 +41,10 @@
         <!-- 因为网关使用flux 所以需要去除springweb-->
         <dependency>
             <groupId>com.sxmd</groupId>
+            <artifactId>sxmd-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sxmd</groupId>
             <artifactId>sxmd-web</artifactId>
             <exclusions>
                 <exclusion>
